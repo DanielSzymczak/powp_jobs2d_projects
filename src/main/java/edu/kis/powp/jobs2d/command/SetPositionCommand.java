@@ -14,19 +14,6 @@ public class SetPositionCommand implements DriverCommand {
         this.posY = posY;
     }
 
-    public int getX() {
-        return posX;
-    }
-
-    public int getY() {
-        return posY;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("SetPositionCommand (x=%d, y=%d)", posX, posY);
-    }
-
     @Override
     public void execute(Job2dDriver driver) {
         driver.setPosition(posX, posY);
@@ -61,4 +48,3 @@ public class SetPositionCommand implements DriverCommand {
         visitor.visit(this);
     }
 }
-

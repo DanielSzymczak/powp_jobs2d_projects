@@ -1,23 +1,22 @@
 package edu.kis.powp.jobs2d.transformations;
+import edu.kis.powp.jobs2d.drivers.VisitableJob2dDriver;
 
-public class ScaleTransformation implements PointTransformation {
+
+public class ScaleTransformationDecorator extends TransformationDecorator {
     private final double scaleX;
     private final double scaleY;
 
-    public ScaleTransformation(double scaleX, double scaleY) {
+    public ScaleTransformationDecorator(VisitableJob2dDriver driver, double scaleX, double scaleY) {
+        super(driver);
         this.scaleX = scaleX;
         this.scaleY = scaleY;
     }
 
     @Override
-    public int[] transformation(int x, int y) {
+    protected int[] transformation(int x, int y) {
         int newX = (int) Math.round(scaleX * x);
         int newY = (int) Math.round(scaleY * y);
         return new int[] { newX, newY };
     }
 
-    @Override
-    public String getName() {
-        return "Scale X: " + scaleX + ", Y: " + scaleY;
-    }
 }

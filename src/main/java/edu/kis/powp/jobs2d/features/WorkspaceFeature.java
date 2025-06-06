@@ -2,14 +2,11 @@ package edu.kis.powp.jobs2d.features;
 
 import edu.kis.powp.appbase.Application;
 
-import edu.kis.powp.jobs2d.canva.ClippingJobs2dDriverDecorator;
 import edu.kis.powp.jobs2d.drivers.SelectWorkspaceMenuOptionListener;
 import edu.kis.powp.jobs2d.drivers.WorkspaceManager;
 import edu.kis.powp.jobs2d.canva.shapes.CanvaShape;
-import edu.kis.powp.jobs2d.drivers.observers.WorkspaceDriverChangeObserver;
 import edu.kis.powp.jobs2d.plugin.FeaturePlugin;
 
-import java.util.logging.Logger;
 
 /**
  * Provides functionality for integrating workspace shape selection into the application UI.
@@ -20,8 +17,7 @@ import java.util.logging.Logger;
  */
 public class WorkspaceFeature implements FeaturePlugin {
     private static Application app;
-    private static WorkspaceManager workspaceManager;
-    private static ClippingJobs2dDriverDecorator clipper;
+    private static WorkspaceManager workspaceManager = new WorkspaceManager();
 
 
     /**
@@ -30,26 +26,23 @@ public class WorkspaceFeature implements FeaturePlugin {
      * @param application the main {@link Application} instance to which the plugin is attached
      */
     public static void setupWorkspacePlugin(Application application) {
-        clipper = new ClippingJobs2dDriverDecorator(DriverFeature.getDriverManager().getCurrentDriver());
-        workspaceManager = new WorkspaceManager(clipper);
         app = application;
         app.addComponentMenu(WorkspaceFeature.class, "Workspaces");
 
-        WorkspaceDriverChangeObserver observer = new WorkspaceDriverChangeObserver(clipper);
-        DriverFeature.getDriverManager().getChangePublisher().addSubscriber(observer);
-
-        Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        app.addComponentMenuElementWithCheckBox(WorkspaceFeature.class, "Toggle cutting lines", e -> {
-            clipper.toggleClipping();
-            logger.info("Cutting lines: " + (clipper.isClipping() ? "ENABLED" : "DISABLED"));
-        },false);
     }
 
     @Override
     public void setup(Application application) {
         setupWorkspacePlugin(application);
     }
-
+    /**Add commentMore actions
+     * Returns the shared {@link WorkspaceManager} instance used by the workspace feature.
+     *
+     * @return the {@code WorkspaceManager} managing the current canvas shape
+     */
+    public WorkspaceManager getWorkspaceManager() {
+        return workspaceManager;
+    }
     /**
      * Adds a selectable workspace shape option to the "Workspaces" menu.
      * When selected, the shape will be applied to the workspace.
@@ -62,16 +55,5 @@ public class WorkspaceFeature implements FeaturePlugin {
         app.addComponentMenuElement(WorkspaceFeature.class, name, listener);
     }
 
-    public static WorkspaceManager getWorkspaceManager() { return workspaceManager; }
-
-    /**
-     * Checks whether the "cut outstanding lines" feature is currently enabled.
-     * This flag is toggled by the corresponding menu item in the "Workspaces" menu.
-     *
-     * @return {@code true} if cutting outstanding lines is enabled; {@code false} otherwise
-     */
-    public static boolean isCutOutstandingLinesEnabled() {
-        return clipper.isClipping();
-    }
 
 }
