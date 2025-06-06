@@ -44,6 +44,11 @@ public class OperateToCommand implements DriverCommand {
     }
 
     @Override
+    public String toString() {
+        return String.format("OperateToCommand (x=%d, y=%d)", getX(), getY());
+    }
+
+    @Override
     public void accept(DriverCommandVisitor visitor) {
         visitor.visit(this);
     }
